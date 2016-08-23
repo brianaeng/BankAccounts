@@ -63,7 +63,7 @@ module Bank
       puts "\nWhat is your starting balance? "
       @balance = gets.chomp.to_f
       unless @balance >= 0
-        raise ArgumentError.new("A new account cannot be created with a negative balance.") #FIX THIS
+        raise ArgumentError.new("A new account cannot be created with a negative balance.")
       end
     end
 
@@ -80,12 +80,12 @@ module Bank
 
     #Method to depoosit money (& checs if amount is negative)
     def deposit(deposit_amount)
-      if @deposit_amount < 0
+      if deposit_amount < 0
         puts "Invalid deposit amount entered. Please enter a new deposit amount. "
-        @deposit_amount = gets.chomp.to_f
+        deposit_amount = gets.chomp.to_f
       else
-        @balance += @deposit_amount
-        puts "You deposited #{@deposit_amount}. Your new balance is #{@balance}."
+        @balance += deposit_amount
+        puts "You deposited #{deposit_amount}. Your new balance is #{@balance}."
       end
     end
 
@@ -94,6 +94,17 @@ module Bank
   class Owner
     def initialize
       puts "Welcome to E-Corp Bank. To open an account, we require some information."
+
+      #Calls get_info method
+      get_info
+
+      id = rand(111111..999999)
+
+      puts "\nWelcome to your new account at E-Corp, #{@name}. Your ID is #{id}."
+    end
+
+    #Method to obtain user account information
+    def get_info
       print "Please enter your full name: "
       name = gets.chomp.upcase
       @name = name
@@ -101,9 +112,27 @@ module Bank
       address = gets.chomp.upcase
       @address = address
 
-      id = rand(111111..999999)
+      #Calls check_info method
+      check_info
+    end
 
-      puts "\nThank you for creating a new account at E-Corp, #{@name}. Your ID is #{id}."
+    #Method to double-check if user input was correct
+    def check_info
+      puts "\nHere's the account information you submitted
+      Name: #{@name}
+      Address: #{@address}"
+
+      answer2 = nil
+      until answer2 == "YES" || answer2 == "NO"
+      puts "Is this information correct? (YES/NO)"
+      answer2 = gets.chomp.upcase
+        if answer2 == "NO"
+          puts "You indicated that the information was incorrect. Please re-enter your account information."
+          get_info
+        else
+          puts "Thank you for verifying the information."
+        end
+      end
     end
   end
 
