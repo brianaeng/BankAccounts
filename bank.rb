@@ -3,20 +3,19 @@ module Bank
     attr_accessor :balance, :withdraw_amount, :deposit_amount
 
     def initialize
-      get_balance
+      Owner.new
 
-      @id = rand(111111..999999)
-      puts "\nThank you for creating a new account at E-Corp, your ID is #{@id}."
+      get_balance
 
       give_choices
     end
 
     def give_choices
       puts "\nWhat would you like to do today?
-      1 | Withdraw money
-      2 | Deposit money
-      3 | Check balance
-      4 | Exit"
+      | 1 | Withdraw money
+      | 2 | Deposit money
+      | 3 | Check balance
+      | 4 | Exit"
 
       choice = gets.chomp.upcase
 
@@ -54,7 +53,7 @@ module Bank
     end
 
     def get_balance
-      puts "What is your starting balance? "
+      puts "\nWhat is your starting balance? "
       @balance = gets.chomp.to_f
       unless @balance >= 0
         raise ArgumentError.new("A new account cannot be created with a negative balance.") #FIX THIS
@@ -82,6 +81,24 @@ module Bank
     end
 
   end
+
+  class Owner
+    def initialize
+      puts "Welcome to E-Corp Bank. To open an account, we require some information."
+      print "Please enter your full name: "
+      name = gets.chomp.upcase
+      @name = name
+      print "Please enter your full address: "
+      address = gets.chomp.upcase
+      @address = address
+
+      id = rand(111111..999999)
+
+      puts "\nThank you for creating a new account at E-Corp, #{@name}. Your ID is #{id}."
+    end
+
+  end
+
 end
 
 Bank::Account.new
