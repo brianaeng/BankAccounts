@@ -3,13 +3,17 @@ module Bank
     attr_accessor :balance, :withdraw_amount, :deposit_amount
 
     def initialize
+      #Creates new account owner
       Owner.new
 
+      #Calls get_balance
       get_balance
 
+      #Calls give_choices
       give_choices
     end
 
+    #Asks user what type of transaction they'd like to do & calls corresponding method (if any)
     def give_choices
       puts "\nWhat would you like to do today?
       | 1 | Withdraw money
@@ -36,9 +40,11 @@ module Bank
         puts "Thank you for choosing E-Corp Bank."
       end
 
+      #Calls ask_again method
       ask_again
     end
 
+    #Method to allow the loop for additional transactions
     def ask_again
       answer = nil
       until answer == "NO" || answer == "YES"
@@ -52,6 +58,7 @@ module Bank
       end
     end
 
+    #Obtains user's starting balance & raises ArgumentError if negative
     def get_balance
       puts "\nWhat is your starting balance? "
       @balance = gets.chomp.to_f
@@ -60,6 +67,7 @@ module Bank
       end
     end
 
+    #Method to withdraw money (& checks if amount is too high)
     def withdraw(withdraw_amount)
       if @balance < withdraw_amount
         puts "There is not enough money in your account to withdraw that amount. Your balance is #{@balance}. Please enter a new withdraw amount. "
@@ -70,6 +78,7 @@ module Bank
       end
     end
 
+    #Method to depoosit money (& checs if amount is negative)
     def deposit(deposit_amount)
       if @deposit_amount < 0
         puts "Invalid deposit amount entered. Please enter a new deposit amount. "
@@ -96,7 +105,6 @@ module Bank
 
       puts "\nThank you for creating a new account at E-Corp, #{@name}. Your ID is #{id}."
     end
-
   end
 
 end
