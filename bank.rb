@@ -1,6 +1,6 @@
 module Bank
   class Account
-    attr_accessor :balance, :withdraw_amount, :deposit_amount
+    attr_accessor :balance, :withdraw_amount, :deposit_amount, :answer
 
     def initialize
       #Creates new account owner
@@ -38,6 +38,9 @@ module Bank
         puts "You chose to check your balance. Your current balance is #{@balance}."
       when "4", "EXIT"
         puts "Thank you for choosing E-Corp Bank."
+      else
+        puts "Error, invalid input. Please try again."
+        give_choices
       end
 
       #Calls ask_again method
@@ -46,14 +49,17 @@ module Bank
 
     #Method to allow the loop for additional transactions
     def ask_again
-      answer = nil
-      until answer == "NO" || answer == "YES"
+      @answer = nil
+      until @answer == "NO" || @answer == "YES"
         print "Would you like to do another transaction? (YES/NO) "
-        answer = gets.chomp.upcase
-        if answer == "YES"
+        @answer = gets.chomp.upcase
+        if @answer == "YES"
           give_choices
-        else
+        elsif @answer == "NO"
           puts "Thank you for choosing E-Corp Bank."
+        else
+          puts "Error, invalid input. Please try again."
+          ask_again
         end
       end
     end
@@ -129,8 +135,11 @@ module Bank
         if answer2 == "NO"
           puts "You indicated that the information was incorrect. Please re-enter your account information."
           get_info
-        else
+        elsif answer2 == "YES"
           puts "Thank you for verifying the information."
+        else
+          puts "Please try again. Is the above information correct?"
+          answer2 = gets.chomp.upcase
         end
       end
     end
