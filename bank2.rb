@@ -13,7 +13,7 @@ module Bank
     def withdraw(withdraw_amount)
       if @balance < withdraw_amount
         puts "There is not enough money in your account to withdraw that amount. Your balance is #{@balance}. Please enter a new withdraw amount. "
-        withdraw_amount = gets.chomp.to_f
+        # withdraw_amount = gets.chomp.to_f
       else
         @balance -= withdraw_amount
         puts "You withdrew #{withdraw_amount}. Your new balance is #{@balance}."
@@ -24,7 +24,7 @@ module Bank
     def deposit(deposit_amount)
       if deposit_amount < 0
         puts "Invalid deposit amount entered. Please enter a new deposit amount. "
-        deposit_amount = gets.chomp.to_f
+        # deposit_amount = gets.chomp.to_f
       else
         @balance += deposit_amount
         puts "You deposited #{deposit_amount}. Your new balance is #{@balance}."
