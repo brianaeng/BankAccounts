@@ -3,6 +3,7 @@ require 'csv'
 module Bank
   class Account
     attr_accessor :id, :balance, :open_date, :accounts, :fee, :limit
+    @@accounts = []
 
     #Initializes basic account attributes (initialized fee & limit used in other classes)
     def initialize(account_hash)
@@ -12,6 +13,8 @@ module Bank
       @fee = 0
       @limit = 0
 
+      @@accounts.push(self)
+
       #Gives error if balance is negative
       if @balance < 0
         raise ArgumentError.new("A new account cannot be created with a negative balance.")
@@ -20,7 +23,6 @@ module Bank
 
     #Class method to create & store accounts from the csv file
     def self.all
-      @@accounts = []
 
       CSV.open("support/accounts.csv", "r").each do |line|
         account_hash = {}
@@ -44,11 +46,11 @@ module Bank
 
     #Instance method to withdraw money (& checks if amount is too high)
     def withdraw(withdraw_amount)
-      if (@balance - withdraw_amount - fee) < limit
+      if (balance - withdraw_amount - fee) < limit
         puts "There is not enough money in your account to withdraw that amount."
       else
         @balance -= (withdraw_amount + fee)
-        puts "You withdrew #{withdraw_amount} (plus fee of #{fee})."
+        puts "You withdrew $#{withdraw_amount} (plus a fee of $#{fee})."
       end
       return balance
     end
@@ -59,7 +61,7 @@ module Bank
         puts "Invalid deposit amount entered."
       else
         @balance += deposit_amount
-        puts "You deposited #{deposit_amount}. "
+        puts "You deposited $#{deposit_amount}. "
       end
       return balance
     end
@@ -195,13 +197,13 @@ end
 # testing1 = Bank::Account.new(id: 00000, balance: 100, open_date: "test")
 # puts testing1.get_balance
 # puts testing1.deposit(100)
-# puts testing1.withdraw(300)
+# puts testing1.withdraw(50)
 # puts testing1.get_balance
-
+#
 # #Test self.all method for Account class
 # testing2 = Bank::Account.all
 # print testing2
-#
+
 # #Test to see if instance methods work on accounts using self.all
 # testing2[0].get_balance
 #
