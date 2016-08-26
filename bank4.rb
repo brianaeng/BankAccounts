@@ -13,7 +13,7 @@ module Bank
       @limit = 0
 
       #Gives error if balance is negative
-      unless @balance >= 0
+      if @balance < 0
         raise ArgumentError.new("A new account cannot be created with a negative balance.")
       end
     end
@@ -44,8 +44,8 @@ module Bank
 
     #Instance method to withdraw money (& checks if amount is too high)
     def withdraw(withdraw_amount)
-      if (balance - withdraw_amount - fee) < limit
-        return "There is not enough money in your account to withdraw that amount."
+      if (@balance - withdraw_amount - fee) < limit
+        puts "There is not enough money in your account to withdraw that amount."
       else
         @balance -= (withdraw_amount + fee)
         puts "You withdrew #{withdraw_amount}"
@@ -56,7 +56,7 @@ module Bank
     #Instance method to depoosit money (& checs if amount is negative)
     def deposit(deposit_amount)
       if deposit_amount < 0
-        return "Invalid deposit amount entered."
+        puts "Invalid deposit amount entered."
       else
         @balance += deposit_amount
         puts "You deposited #{deposit_amount}. "
@@ -80,14 +80,14 @@ module Bank
   end
 
   class SavingsAccount < Account
-    attr_accessor :interest
+    attr_accessor :interest, :balance
 
     #initializes info inherited from Account class, overrides fee & limit, and adds new warning
     def initialize(account_hash)
       super
       @fee = 2
       @limit = 10
-      unless @balance > 10
+      if @balance < 10
         raise ArgumentError.new("A new account cannot be created with less than $10.")
       end
     end
@@ -102,7 +102,7 @@ module Bank
   end
 
   class CheckingAccount < Account
-    attr_accessor :checks
+    attr_accessor :checks, :balance
 
     #Initializes info inherited from Account class, overrides fee & limit, and adds checks instance variable
     def initialize(account_hash)
@@ -114,23 +114,20 @@ module Bank
 
     #Instance method for check withdrawal
     def withdraw_using_check(amount)
+      @limit = -10
+
       if @checks < 3
-        if (@balance - amount) < -10
-          puts "You cannot go into overdraft beyond -$10."
-        else
-          @balance -= amount
-        end
+        @fee = 0
+        withdraw(amount)
       else
-        if (@balance - amount - 2) < -10
-          puts "You cannot go into overdraft beyond -$10."
-        else
-          @balance -= (amount + 2)
-        end
+        @fee = 2
+        withdraw(amount)
       end
 
       @checks += 1
+      @fee = 1
+      @limit = 0
       return balance
-
     end
 
     #Instance method to reset check count
@@ -196,7 +193,7 @@ end
 # testing1 = Bank::Account.new(id: 00000, balance: 100, open_date: "test")
 # puts testing1.get_balance
 # puts testing1.deposit(100)
-# puts testing1.withdraw(10)
+# puts testing1.withdraw(300)
 # puts testing1.get_balance
 
 # #Test self.all method for Account class
@@ -210,9 +207,9 @@ end
 # puts Bank::Account.find(1214).show
 
 
-###SAVINGSACCOUNT CLASS###
+###SAVINGS ACCOUNT CLASS###
 
-# #Test SavingsAccount and its methods
+# #Test SavingsAccount class and its methods
 # testing5 = Bank::SavingsAccount.new(id: 8439545, balance: 21, open_date: "today")
 # puts testing5.withdraw(1)
 # puts testing5.withdraw(1)
@@ -223,21 +220,21 @@ end
 # puts testing5.add_interest(0.25)
 
 
-###CHECKINGACCOUNT CLASS###
+###CHECKING ACCOUNT CLASS###
 
-# #Test CheckingAccount and its methods
-# testing6 = Bank::CheckingAccount.new(id: 395435, balance: 11, open_date: "yesterday")
+#Test CheckingAccount class and its methods
+# testing6 = Bank::CheckingAccount.new(id: 395435, balance: 10, open_date: "yesterday")
 # puts testing6.withdraw(1)
 # puts testing6.withdraw(2)
 # puts testing6.deposit(1)
+# puts testing6.withdraw_using_check(1)
+# puts testing6.withdraw_using_check(1)
+# puts testing6.withdraw_using_check(1)
+# puts testing6.withdraw(1)
+# puts testing6.withdraw_using_check(20)
 # puts testing6.withdraw_using_check(3)
-# puts testing6.withdraw_using_check(1)
-# puts testing6.withdraw_using_check(1)
-# puts testing6.withdraw_using_check(1)
-# testing6.reset_checks
-# puts testing6.withdraw_using_check(10)
-# puts testing6.withdraw_using_check(3)
-# puts testing6.withdraw_using_check(1)
+# puts testing6.withdraw_using_check(2)
+
 
 ###OWNER CLASS###
 
@@ -246,3 +243,25 @@ end
 #
 # #Test self.find method for Owner class
 # puts Bank::Owner.find(16).show
+
+
+
+
+
+
+
+
+
+#   if @checks < 3
+#     if (@balance - amount) < -10
+#       puts "You cannot go into overdraft beyond -$10."
+#     else
+#       @balance -= amount
+#     end
+#   else
+#     if (@balance - amount - 2) < -10
+#       puts "You cannot go into overdraft beyond -$10."
+#     else
+#       @balance -= (amount + 2)
+#     end
+#   end
