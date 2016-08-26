@@ -48,7 +48,7 @@ module Bank
         puts "There is not enough money in your account to withdraw that amount."
       else
         @balance -= (withdraw_amount + fee)
-        puts "You withdrew #{withdraw_amount}"
+        puts "You withdrew #{withdraw_amount} (plus fee of #{fee})."
       end
       return balance
     end
@@ -71,7 +71,7 @@ module Bank
 
     #Instance method to cleanly display account attributes
     def show
-      return "
+      puts "
       ID: #{id}
       Balance: #{balance}
       Date: #{open_date}"
@@ -80,7 +80,7 @@ module Bank
   end
 
   class SavingsAccount < Account
-    attr_accessor :interest, :balance
+    attr_accessor :interest
 
     #initializes info inherited from Account class, overrides fee & limit, and adds new warning
     def initialize(account_hash)
@@ -102,7 +102,7 @@ module Bank
   end
 
   class CheckingAccount < Account
-    attr_accessor :checks, :balance
+    attr_accessor :checks
 
     #Initializes info inherited from Account class, overrides fee & limit, and adds checks instance variable
     def initialize(account_hash)
@@ -125,6 +125,8 @@ module Bank
       end
 
       @checks += 1
+
+      #Resets fee & limit to initialized values
       @fee = 1
       @limit = 0
       return balance
@@ -173,7 +175,7 @@ module Bank
 
     #Instance method to cleanly display owner attributes
     def show
-      return "
+      puts "
       ID: #{id}
       Last Name: #{last_name}
       First Name: #{first_name}
@@ -210,7 +212,7 @@ end
 ###SAVINGS ACCOUNT CLASS###
 
 # #Test SavingsAccount class and its methods
-# testing5 = Bank::SavingsAccount.new(id: 8439545, balance: 21, open_date: "today")
+# testing5 = Bank::SavingsAccount.new(id: 8439545, balance: 20, open_date: "today")
 # puts testing5.withdraw(1)
 # puts testing5.withdraw(1)
 # puts testing5.deposit(1)
@@ -243,25 +245,3 @@ end
 #
 # #Test self.find method for Owner class
 # puts Bank::Owner.find(16).show
-
-
-
-
-
-
-
-
-
-#   if @checks < 3
-#     if (@balance - amount) < -10
-#       puts "You cannot go into overdraft beyond -$10."
-#     else
-#       @balance -= amount
-#     end
-#   else
-#     if (@balance - amount - 2) < -10
-#       puts "You cannot go into overdraft beyond -$10."
-#     else
-#       @balance -= (amount + 2)
-#     end
-#   end
