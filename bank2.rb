@@ -42,11 +42,12 @@ module Bank
     #Instance method to withdraw money (& checks if amount is too high)
     def withdraw(withdraw_amount)
       if @balance < withdraw_amount
-        puts "There is not enough money in your account to withdraw that amount. Your balance is #{@balance}."
+        puts "There is not enough money in your account to withdraw that amount."
       else
         @balance -= withdraw_amount
-        puts "You withdrew #{withdraw_amount}. Your new balance is #{@balance}."
+        puts "You withdrew #{withdraw_amount}."
       end
+      return balance
     end
 
     #Instance method to depoosit money (& checs if amount is negative)
@@ -55,21 +56,87 @@ module Bank
         puts "Invalid deposit amount entered."
       else
         @balance += deposit_amount
-        puts "You deposited #{deposit_amount}. Your new balance is #{@balance}."
+        puts "You deposited #{deposit_amount}. Your new balance is #{balance}."
       end
     end
 
     #Instance method to show balance
     def get_balance
-      puts "Your balance is #{@balance}."
+      puts "Your balance is #{balance}."
     end
 
     #Instance method to cleanly display account attributes
     def show
       puts "
-      ID: #{@id}
-      Balance: #{@balance}
-      Date: #{@open_date}"
+      ID: #{id}
+      Balance: #{balance}
+      Date: #{open_date}"
+    end
+
+  end
+
+  class SavingsAccount < Account
+    attr_accessor :interest
+
+    def initialize(id, balace, open_date)
+      super
+      unless @balance > 10
+        raise ArgumentError.new("A new account cannot be created with less than $10.")
+      end
+    end
+
+    def withdraw(withdraw_amount)
+      if @balance < (withdraw_amount + 2)
+        puts "There is not enough money in your account to withdraw that amount."
+      elsif (@balance - withdraw_amount) < 8
+        puts "Unable to make withdrawal because your account cannot go below $10."
+      else
+        @balance -= (withdraw_amount + 2)
+      end
+      return balance
+    end
+
+    def add_interest(rate)
+      @interest = @balance * (rate/100)
+      @balance += interest
+      return interest
+    end
+
+  end
+
+  class CheckingAccount < Account
+    attr_accessor :checks
+
+    def withdraw(withdraw_amount)
+      if @balance < (withdraw_amount + 1)
+        puts "There is not enough money in your account to withdraw that amount."
+      else
+        @balance -= (withdraw_amount + 1)
+      end
+      return balance
+    end
+
+    def withdraw_using_check(amount)
+      @@checks = 3
+
+      until @@checks <= 0
+        @@checks -= 1
+        if @balance < (amount - 10)
+          puts "You cannot go into overdraft beyond -$10."
+        else
+          @balance -= amount
+        end
+        puts "TEST #{@@checks}"
+        return balance
+      end
+
+      if @balance < (amount - 10)
+        puts "You cannot go into overdraft beyond -$10."
+      else
+        @balance -= (amount + 2)
+      end
+      return balance
+
     end
 
   end
@@ -114,41 +181,52 @@ module Bank
     #Instance method to cleanly display owner attributes
     def show
       puts "
-      ID: #{@id}
-      Last Name: #{@last_name}
-      First Name: #{@first_name}
-      Address: #{@address}
-      City: #{@city}
-      State: #{@state}"
+      ID: #{id}
+      Last Name: #{last_name}
+      First Name: #{first_name}
+      Address: #{address}
+      City: #{city}
+      State: #{state}"
     end
 
   end
 
 end
 
-#Test self.all method for account class
-testing3 = Bank::Account.all
-print testing3
-
-#Test self.find method for account class
-Bank::Account.find(1214).show
-
-#Test self.all method for owner class
-Bank::Owner.all
-
-#Test self.find method for owner class
-Bank::Owner.find(16).show
-
-#Test to see if instance methods work on new additions
-testing3[0].get_balance
+#Test SavingsAccount
+testing5 = Bank::CheckingAccount.new(8439545, 10, "today")
+puts testing5.withdraw_using_check(1)
+puts testing5.withdraw_using_check(1)
+puts testing5.withdraw_using_check(1)
+puts testing5.withdraw_using_check(1)
+puts testing5.withdraw_using_check(1)
 
 
-#Testing instance methods on an initialized account
-testing2 = Bank::Account.new(00000, 100, "test")
-testing2.get_balance
-testing2.deposit(100)
-testing2.withdraw(10)
-testing2.get_balance
+
+
+# #Test self.all method for account class
+# testing3 = Bank::Account.all
+# print testing3
+#
+# #Test self.find method for account class
+# Bank::Account.find(1214).show
+#
+# #Test self.all method for owner class
+# Bank::Owner.all
+#
+# #Test self.find method for owner class
+# Bank::Owner.find(16).show
+#
+# #Test to see if instance methods work on new additions
+# testing3[0].get_balance
+#
+#
+# #Testing instance methods on an initialized account
+# testing2 = Bank::Account.new(00000, 100, "test")
+# testing2.get_balance
+# testing2.deposit(100)
+# testing2.withdraw(10)
+# testing2.get_balance
 
 # def self.link_owner
 #   counter = 0
